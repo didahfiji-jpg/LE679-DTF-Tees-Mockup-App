@@ -37,24 +37,9 @@ jobs:
           if (-not (Test-Path "index.html")) { throw "index.html missing" }
           if ((Get-Item "index.html").Length -lt 500000) { throw "index.html appears incomplete" }
 
-      - name: Create Windows icon from cover artwork
+      - name: Generate high-resolution V1 icon
         shell: pwsh
-        run: |
-          @'
-          import base64
-          from pathlib import Path
-          from PIL import Image
-          source = Path("assets/cover_icon.png.b64")
-          Path("cover_icon.png").write_bytes(base64.b64decode(source.read_text().strip()))
-          image = Image.open("cover_icon.png").convert("RGB")
-          from PIL import ImageDraw, ImageFont
-          image = image.resize((512, 512), Image.Resampling.LANCZOS)
-          draw = ImageDraw.Draw(image)
-          draw.rounded_rectangle((312, 355, 495, 488), radius=24, fill="#07122b", outline="#00eaff", width=9)
-          font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 90)
-          draw.text((332, 367), "V1", fill="#ffffff", font=font, stroke_width=2, stroke_fill="#d900ff")
-          image.save("app.ico", format="ICO", sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])
-          '@ | python -
+        run: python tools/generate_icon.py
 
       - name: Build standalone EXE
         shell: pwsh
