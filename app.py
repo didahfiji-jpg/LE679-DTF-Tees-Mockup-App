@@ -14,7 +14,7 @@ if __name__ == "__main__":
     if not html.is_file():
         raise FileNotFoundError(f"Missing bundled application file: {html}")
     webview.create_window(
-        "DTF Tees Mockup App",
+        "DTF Tees Mockup App V1",
         html.resolve().as_uri(),
         width=1440,
         height=900,
