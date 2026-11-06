@@ -28,7 +28,7 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pywebview pyinstaller
+          python -m pip install pywebview pyinstaller pillow
 
       - name: Verify application files
         shell: pwsh
@@ -37,10 +37,23 @@ jobs:
           if (-not (Test-Path "index.html")) { throw "index.html missing" }
           if ((Get-Item "index.html").Length -lt 500000) { throw "index.html appears incomplete" }
 
+      - name: Create Windows icon from cover artwork
+        shell: pwsh
+        run: |
+          @'
+          import base64
+          from pathlib import Path
+          from PIL import Image
+          source = Path("assets/cover_icon.png.b64")
+          Path("cover_icon.png").write_bytes(base64.b64decode(source.read_text().strip()))
+          image = Image.open("cover_icon.png").convert("RGB")
+          image.resize((256, 256), Image.Resampling.LANCZOS).save("app.ico", format="ICO", sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])
+          '@ | python -
+
       - name: Build standalone EXE
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "DTF Tees Mockup App" --add-data "index.html;." app.py
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "DTF Tees Mockup App" --icon "app.ico" --add-data "index.html;." app.py
           if (-not (Test-Path "dist/DTF Tees Mockup App.exe")) { throw "EXE build failed" }
 
       - name: Upload downloadable EXE
