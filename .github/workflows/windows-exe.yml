@@ -53,13 +53,13 @@ jobs:
       - name: Build standalone EXE
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "DTF Tees Mockup App" --icon "app.ico" --add-data "index.html;." app.py
-          if (-not (Test-Path "dist/DTF Tees Mockup App.exe")) { throw "EXE build failed" }
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "DTF Tees Mockup App V1" --icon "app.ico" --add-data "index.html;." app.py
+          if (-not (Test-Path "dist/DTF Tees Mockup App V1.exe")) { throw "EXE build failed" }
 
       - name: Upload downloadable EXE
         uses: actions/upload-artifact@v4
         with:
-          name: LE679-DTF-Tees-Mockup-Windows-EXE
-          path: dist/DTF Tees Mockup App.exe
+          name: LE679-DTF-Tees-Mockup-V1-Windows-EXE
+          path: dist/DTF Tees Mockup App V1.exe
           if-no-files-found: error
           retention-days: 30
