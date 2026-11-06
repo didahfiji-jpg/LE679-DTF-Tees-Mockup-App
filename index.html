@@ -181,8 +181,8 @@ function drawCopyrightFooter(c){
  c.restore();
 }
 function render(c=ctx,b=board(),withGuide=$('guide').checked){c.clearRect(0,0,1312,1199);drawShirt(c,b);drawArtwork(c,b);drawMockupExtras(c,b);protectedOverlay(c,b);drawCopyrightFooter(c);if(withGuide){c.save();c.strokeStyle='#f03d3d';c.lineWidth=3;c.setLineDash([14,9]);c.strokeRect(A3.x,A3.y,A3.w,A3.h);c.setLineDash([]);c.font='bold 23px Arial';c.fillStyle='#e33131';c.fillText('A3 • 297 × 420 mm',A3.x,A3.y-15);c.restore()}}
-function refreshUI(){const b=board();b.x=0;b.y=0;$('boardName').value=b.name;['headerCaption','headerFont','headerColor'].forEach(k=>$(k).value=b[k]??(k==='headerColor'?'#252525':''));['headerSize','headerX','headerY','headerAngle'].forEach(k=>{$(k).value=b[k]??({headerSize:44,headerX:656,headerY:85,headerAngle:0}[k]);$(k+'Val').textContent=$(k).value+(k==='headerAngle'?'°':' px')});$('headerSystemFont').value=b.headerFont||'';$('headerVisible').checked=b.headerVisible!==false;$('mockupDescription').value=b.description||'';$('captionColor').value=b.captionColor||'#282b31';$('captionSize').value=b.captionSize||25;$('captionAngle').value=b.captionAngle??90;$('captionAngleVal').textContent=(b.captionAngle??90)+'°';$('manualFont').value=b.captionFont||'';$('systemFont').value=b.captionFont||'';$('captionSizeVal').textContent=(b.captionSize||25)+' px';$('captionX').value=b.captionX??85;$('captionXVal').textContent=(b.captionX??85)+' px';$('captionY').value=b.captionY??330;$('captionYVal').textContent=(b.captionY??330)+' px';$('showDescription').checked=b.showDescription!==false;$('showWatermark').checked=b.showWatermark!==false;$('watermarkSize').value=b.watermarkSize??100;$('watermarkSizeVal').textContent=(b.watermarkSize??100)+'%';$('watermarkOpacity').value=b.watermarkOpacity??100;$('watermarkOpacityVal').textContent=(b.watermarkOpacity??100)+'%';$('customColor').value=b.color;['size','x','y','angle','opacity'].forEach(k=>{$(k).value=b[k];$(''+k+'Val').textContent=b[k]+(['size','opacity'].includes(k)?'%':k==='angle'?'°':'')});$('swatches').innerHTML='';for(const color of presets){const el=document.createElement('button');el.className='swatch'+(color===b.color?' selected':'');el.style.background=color;el.title=color;el.onclick=()=>{b.color=color;refreshUI()};$('swatches').appendChild(el)}$('tabs').querySelectorAll('.tab').forEach(el=>el.remove());boards.forEach((item,i)=>{const btn=document.createElement('button');btn.className='tab'+(i===active?' active':'');btn.textContent=item.name;btn.onclick=()=>{active=i;refreshUI()};$('tabs').insertBefore(btn,$('addBoard'))});$('delete').disabled=boards.length===1;render()}
-$('addBoard').onclick=()=>{boards.push(newBoard(boards.length+1));active=boards.length-1;refreshUI()};$('duplicate').onclick=()=>{const b=structuredClone(board());b.id=Date.now()+Math.random();b.name=b.name+' copy';boards.splice(active+1,0,b);active++;refreshUI()};$('delete').onclick=()=>{if(boards.length===1)return;boards.splice(active,1);active=Math.min(active,boards.length-1);refreshUI()};$('boardName').oninput=e=>{board().name=e.target.value||'Untitled';refreshUIName()};function refreshUIName(){$('tabs').querySelectorAll('.tab').forEach((el,i)=>el.textContent=boards[i].name)}
+function refreshUI(){const b=board();b.x=0;b.y=0;$('boardName').value=b.name;['headerCaption','headerFont','headerColor'].forEach(k=>$(k).value=b[k]??(k==='headerColor'?'#252525':''));['headerSize','headerX','headerY','headerAngle'].forEach(k=>{$(k).value=b[k]??({headerSize:44,headerX:656,headerY:85,headerAngle:0}[k]);$(k+'Val').textContent=$(k).value+(k==='headerAngle'?'°':' px')});$('headerSystemFont').value=b.headerFont||'';$('headerVisible').checked=b.headerVisible!==false;$('mockupDescription').value=b.description||'';$('captionColor').value=b.captionColor||'#282b31';$('captionSize').value=b.captionSize||25;$('captionAngle').value=b.captionAngle??90;$('captionAngleVal').textContent=(b.captionAngle??90)+'°';$('manualFont').value=b.captionFont||'';$('systemFont').value=b.captionFont||'';$('captionSizeVal').textContent=(b.captionSize||25)+' px';$('captionX').value=b.captionX??85;$('captionXVal').textContent=(b.captionX??85)+' px';$('captionY').value=b.captionY??330;$('captionYVal').textContent=(b.captionY??330)+' px';$('showDescription').checked=b.showDescription!==false;$('showWatermark').checked=b.showWatermark!==false;$('watermarkSize').value=b.watermarkSize??100;$('watermarkSizeVal').textContent=(b.watermarkSize??100)+'%';$('watermarkOpacity').value=b.watermarkOpacity??100;$('watermarkOpacityVal').textContent=(b.watermarkOpacity??100)+'%';$('customColor').value=b.color;['size','x','y','angle','opacity'].forEach(k=>{$(k).value=b[k];$(''+k+'Val').textContent=b[k]+(['size','opacity'].includes(k)?'%':k==='angle'?'°':'')});$('swatches').innerHTML='';for(const color of presets){const el=document.createElement('button');el.className='swatch'+(color===b.color?' selected':'');el.style.background=color;el.title=color;el.onclick=()=>{b.color=color;refreshUI()};$('swatches').appendChild(el)}$('tabs').querySelectorAll('.tab').forEach(el=>el.remove());boards.forEach((item,i)=>{const btn=document.createElement('button');btn.className='tab'+(i===active?' active':'');btn.textContent=item.name;btn.onclick=()=>{active=i;refreshUI()};const close=document.createElement('span');close.className='le679-tab-close';close.textContent=' ×';close.title='Delete '+item.name;close.setAttribute('role','button');close.setAttribute('aria-label','Delete '+item.name);close.onclick=e=>{e.stopPropagation();if(boards.length===1){alert('Keep at least one artboard.');return;}if(!confirm('Delete '+item.name+'?'))return;boards.splice(i,1);if(active>=i&&active>0)active--;active=Math.min(active,boards.length-1);refreshUI()};btn.appendChild(close);$('tabs').insertBefore(btn,$('addBoard'))});$('delete').disabled=boards.length===1;render()}
+$('addBoard').onclick=()=>{boards.push(newBoard(boards.length+1));active=boards.length-1;refreshUI()};$('duplicate').onclick=()=>{const b=structuredClone(board());b.id=Date.now()+Math.random();b.name=b.name+' copy';boards.splice(active+1,0,b);active++;refreshUI()};$('delete').onclick=()=>{if(boards.length===1)return;boards.splice(active,1);active=Math.min(active,boards.length-1);refreshUI()};$('boardName').oninput=e=>{board().name=e.target.value||'Untitled';refreshUIName()};function refreshUIName(){$('tabs').querySelectorAll('.tab').forEach((el,i)=>el.firstChild.textContent=boards[i].name;const x=el.querySelector('.le679-tab-close');if(x){x.title='Delete '+boards[i].name;x.setAttribute('aria-label','Delete '+boards[i].name)}})
 ['headerCaption','headerFont','headerColor'].forEach(k=>$(k).oninput=e=>{board()[k]=e.target.value;render()});['headerSize','headerX','headerY','headerAngle'].forEach(k=>$(k).oninput=e=>{board()[k]=+e.target.value;$(k+'Val').textContent=e.target.value+(k==='headerAngle'?'°':' px');render()});$('headerVisible').onchange=e=>{board().headerVisible=e.target.checked;render()};$('headerStraight').onclick=()=>{$('headerAngle').value=0;$('headerAngle').dispatchEvent(new Event('input'))};
 $('headerSystemFont').onchange=e=>{board().headerFont=e.target.value;$('headerFont').value=e.target.value;render()};
 $('headerFont').addEventListener('input',()=>{$('headerSystemFont').value=board().headerFont||''});
@@ -369,5 +369,38 @@ paste.addEventListener('click',()=>{
 .le679-text-transfer button{font-size:12px!important;padding:7px 12px!important;background:linear-gradient(120deg,#1a5a88,#593c8d)!important;border:1px solid #6597cf!important;color:#f3f8ff!important}
 .le679-text-transfer button:disabled{opacity:.42;cursor:not-allowed;box-shadow:none!important}
 #le679TransferStatus{font-size:12px;color:#9cdfff}
+</style>
+
+<script id="le679-caption-backspace">
+(()=>{
+ 'use strict';
+ let selected=null;
+ const viewport=document.getElementById('viewport');
+ const status=document.createElement('span');status.id='le679SelectedTextStatus';status.textContent='Click a header or caption to select it, then press Delete or Backspace.';
+ const tabs=document.getElementById('tabs');tabs.parentNode.insertBefore(status,tabs);
+ viewport.addEventListener('pointerdown',e=>{
+   if(e.button!==0)return;
+   const p=point(e),b=board();
+   selected=headerHit(p,b)?'header':captionHit(p,b)?'caption':null;
+   status.textContent=selected?'Selected '+(selected==='header'?'header text':'vertical caption')+' — press Backspace or Delete to remove.':'Click a header or caption to select it, then press Delete or Backspace.';
+ },true);
+ document.addEventListener('keydown',e=>{
+   if(e.key!=='Backspace'&&e.key!=='Delete')return;
+   const el=document.activeElement;
+   if(el&&(el.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(el.tagName)))return;
+   if(e.ctrlKey||e.metaKey||e.altKey||!selected)return;
+   const b=board();
+   if(selected==='header'){b.headerCaption='';document.getElementById('headerCaption').value='';}
+   else{b.description='';document.getElementById('mockupDescription').value='';}
+   selected=null;e.preventDefault();render();
+   status.textContent='Text deleted. Other artwork and settings are unchanged.';
+ });
+ document.getElementById('tabs').addEventListener('click',()=>{selected=null;},true);
+})();
+</script>
+<style id="le679-artboard-delete-style">
+.le679-tab-close{display:inline-block;margin-left:9px;padding:1px 6px;border-radius:6px;color:#ffd4e4;font-weight:900;background:#6d264b;cursor:pointer}
+.le679-tab-close:hover{background:#d63e6d;color:#fff}
+#le679SelectedTextStatus{display:block;padding:6px 14px;background:#121a2c;color:#b7dfff;font-size:12px}
 </style>
 </body></html>
