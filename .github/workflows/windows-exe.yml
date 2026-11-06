@@ -1,0 +1,52 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-exe:
+    name: Package Windows desktop app
+    runs-on: windows-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out app source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pywebview and PyInstaller
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pywebview pyinstaller
+
+      - name: Verify application files
+        shell: pwsh
+        run: |
+          python -m py_compile app.py
+          if (-not (Test-Path "index.html")) { throw "index.html missing" }
+          if ((Get-Item "index.html").Length -lt 500000) { throw "index.html appears incomplete" }
+
+      - name: Build standalone EXE
+        shell: pwsh
+        run: |
+          python -m PyInstaller --noconfirm --clean --onefile --windowed --name "DTF Tees Mockup App" --add-data "index.html;." app.py
+          if (-not (Test-Path "dist/DTF Tees Mockup App.exe")) { throw "EXE build failed" }
+
+      - name: Upload downloadable EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: LE679-DTF-Tees-Mockup-Windows-EXE
+          path: dist/DTF Tees Mockup App.exe
+          if-no-files-found: error
+          retention-days: 30
